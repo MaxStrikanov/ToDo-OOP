@@ -38,8 +38,7 @@ class Todo {
         } else {
             this.todoList.append(li);
         }
-        console.log(todo.key);
-        console.log(li);
+        
     }
 
     addTodo(e) {
@@ -61,20 +60,19 @@ class Todo {
         return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     } 
 
-    deleteItem(elem) {
-        [...this.todoData].forEach((item, index) => {
-            if (elem === item[0]) {
-                let i = [...this.todoData].filter((item) => item[0] !== elem);
-                this.todoData = i.splice(0);
-                console.log(elem);
-            }
-            
-        })
-        
+    deleteItem(elemKey) {
+       
+       this.todoData.delete(elemKey)
+       this.render();
+       
     }
 
-    completedItem() {
-         
+    completedItem(elemKey)  {
+        const item = this.todoData.get(elemKey);
+        item.completed ? item.completed = false : item.completed = true;
+       
+        this.render()
+        
     }
 
     handler() {
@@ -82,13 +80,19 @@ class Todo {
         document.addEventListener('click', (e) => {
 
             let target = e.target;
-        
+            
             if(target.classList.contains('todo-complete')){
-                this.completedItem()
+
+                let closest = target.closest('.todo-item');
+                this.completedItem(closest.key);
+                
             } 
             
             if(target.classList.contains('todo-remove')){
-                this.deleteItem();
+
+                let closest = target.closest('.todo-item')
+                this.deleteItem(closest.key);
+                
             }  
             
         })
@@ -105,3 +109,4 @@ class Todo {
 const todo = new Todo('.todo-control', '.header-input', '.todo-list', '.todo-completed')
 
 todo.init();
+
